@@ -1,6 +1,10 @@
 import configparser
 from graph import Graph
 
+x = vars(Graph)
+print(x)
+
+
 def main():
     print('Python Graph Tutorial\n')
 
