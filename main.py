@@ -1,10 +1,6 @@
 import configparser
 from graph import Graph
 
-x = vars(Graph)
-print(x)
-
-
 def main():
     print('Python Graph Tutorial\n')
 
@@ -49,24 +45,51 @@ def main():
             print('Invalid choice!\n')
 
 def greet_user(graph: Graph):
-    # TODO
-    return
+    user = graph.get_user()
+    print('Hello,', user['displayName'])
+    # For Work/school accounts, email is in mail property
+    # Personal accounts, email is in userPrincipalName
+    print('Email:', user['mail'] or user['userPrincipalName'], '\n')
 
 def display_access_token(graph: Graph):
     token = graph.get_user_token()
     print('User token:', token, '\n')
 
 def list_inbox(graph: Graph):
-    # TODO
-    return
+    message_page = graph.get_inbox()
+
+    # Output each message's details
+    for message in message_page['value']:
+        print('Message:', message['subject'])
+        print('  From:', message['from']['emailAddress']['name'])
+        print('  Status:', 'Read' if message['isRead'] else 'Unread')
+        print('  Received:', message['receivedDateTime'])
+
+    # If @odata.nextLink is present
+    more_available = '@odata.nextLink' in message_page
+    print('\nMore messages available?', more_available, '\n')
 
 def send_mail(graph: Graph):
-    # TODO
-    return
+    # Send mail to the signed-in user
+    # Get the user for their email address
+    user = graph.get_user()
+    user_email = user['mail'] or user['userPrincipalName']
+
+    graph.send_mail('Testing Microsoft Graph', 'Hello world!', user_email)
+    print('Mail sent.\n')
 
 def list_users(graph: Graph):
-    # TODO
-    return
+    users_page = graph.get_users()
+
+    # Output each users's details
+    for user in users_page['value']:
+        print('User:', user['displayName'])
+        print('  ID:', user['id'])
+        print('  Email:', user['mail'])
+
+    # If @odata.nextLink is present
+    more_available = '@odata.nextLink' in users_page
+    print('\nMore users available?', more_available, '\n')
 
 def make_graph_call(graph: Graph):
     # TODO
